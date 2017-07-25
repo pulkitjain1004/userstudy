@@ -1,7 +1,29 @@
 import csv
 
+def substring_at_ends(s1, s2):
+    finalStr1 = ""
+    finalStr2 = ""
+    if s1.startswith(s2):
+        for i in range(len(s2)):
+            finalStr2 = finalStr2 + "*"
+            finalStr1 = finalStr1 + "*"
+        for i in range(len(s2),len(s1)):
+            finalStr1 = finalStr1 + s1[i]
+            finalStr2 = finalStr2 + "_"
+    elif s1.endswith(s2):
+        for i in range(len(s1)-1,len(s1)-len(s2)-1,-1):
+            finalStr2 = "*" + finalStr2
+            finalStr1 = "*" + finalStr1
+        for i in range(len(s1)-len(s2)-1,-1,-1):
+            finalStr1 = s1[i] + finalStr1
+            finalStr2 = "_" + finalStr2
 
-def get_edit_distance(s1, s2):
+    return finalStr1,finalStr2
+
+
+
+def get_edit_distance(s1, s2, title=''):
+
     finalStr1 = ""
     finalStr2 = ""
 
@@ -13,155 +35,100 @@ def get_edit_distance(s1, s2):
     len1 = len(s1)
     len2 = len(s2)
 
-    dp = {}
-    direction = {}
-    for i in range(len1+1):
-        dp[i] = {}
-        direction[i] = {}
-        for j in range(len2+1):
-            dp[i][j] = []
-            direction[i][j] = []
+    if len1 > len2:
+        finalStr1,finalStr2 = substring_at_ends(s1,s2)
+    elif len2>len1:
+        finalStr2, finalStr1 = substring_at_ends(s2, s1)
 
-    for i in range(len1 + 1):
-        for j in range(len2 + 1):
-            if i == 0:
-                dp[i][j] = j
-                direction[i][j] = 'd'
-            elif j == 0:
-                dp[i][j] = i
-                direction[i][j] = 'i'
+    if len(finalStr1)==0 and len(finalStr2)==0:
+        dp = {}
+        direction = {}
+        for i in range(len1 + 1):
+            dp[i] = {}
+            direction[i] = {}
+            for j in range(len2 + 1):
+                dp[i][j] = []
+                direction[i][j] = []
 
-    for i in range(1,len1+1):
-        for j in range(1,len2+1):
-            # if i == 0:
-            #     dp[i][j] = j
-            #     direction[i][j] = 'd'
-            # elif j == 0:
-            #     dp[i][j] = i
-            #     direction[i][j] = 'i'
-            # # elif s1[i - 1] == s2[j - 1]:
-            # #     dp[i][j] = dp[i - 1][j - 1]
-            # #     direction[i][j] = 'n'
-            # else:
+        for i in range(len1 + 1):
+            for j in range(len2 + 1):
+                if i == 0:
+                    dp[i][j] = j
+                    direction[i][j] = 'd'
+                elif j == 0:
+                    dp[i][j] = i
+                    direction[i][j] = 'i'
 
-            insertVal = dp[i - 1][j] + 1
-            deleteVal = dp[i][j - 1] + 1
-            subsVal = dp[i - 1][j - 1] + (0 if s1[i - 1] == s2[j - 1] else 1)
-            transVal = 1000000000
-            if i > 1 and j > 1 and s1[i - 1] == s2[j - 2] and s1[i - 2] == s2[j - 1] and s1[i - 1] != s1[i - 2]:
-                transVal = dp[i - 2][j - 2]
-            minAll = min([insertVal, deleteVal, subsVal, transVal])
-            dp[i][j] = minAll
-            # print  i,j,minAll
-
-
-            if minAll == transVal:
-                direction[i][j] = 't'
-            elif minAll == insertVal:
-                direction[i][j] = 'i'
-            elif minAll == deleteVal:
-                direction[i][j] = 'd'
-            else:
-                if s1[i - 1] == s2[j - 1]:
+        for i in range(len1 + 1):
+            for j in range(len2 + 1):
+                if i == 0:
+                    dp[i][j] = j
+                    direction[i][j] = 'd'
+                elif j == 0:
+                    dp[i][j] = i
+                    direction[i][j] = 'i'
+                elif s1[i - 1] == s2[j - 1]:
+                    dp[i][j] = dp[i - 1][j - 1]
                     direction[i][j] = 'n'
                 else:
-                    direction[i][j] = 's'
 
-                # dp[i][j] = minAll + 1
+                    insertVal = dp[i - 1][j] + 1
+                    deleteVal = dp[i][j - 1] + 1
+                    subsVal = dp[i - 1][j - 1] + (0 if s1[i - 1] == s2[j - 1] else 1)
+                    transVal = 1000000000
+                    if i > 1 and j > 1 and s1[i - 1] == s2[j - 2] and s1[i - 2] == s2[j - 1] and s1[i - 1] != s1[i - 2]:
+                        transVal = dp[i - 2][j - 2]
+                    minAll = min([insertVal, deleteVal, subsVal, transVal])
+                    if title=='ID':
+                        dp[i][j] = minAll + 1
+                    else:
+                        dp[i][j] = minAll
 
-    stI = len1
-    stJ = len2
-    while stI > 0 or stJ > 0:
-        if direction[stI][stJ] == 'i':
-            finalStr1 = s1[stI - 1] + finalStr1
-            finalStr2 = "_" + finalStr2
-            stI = stI - 1
+                    if minAll == transVal:
+                        direction[i][j] = 't'
+                    elif minAll == insertVal:
+                        direction[i][j] = 'i'
+                    elif minAll == deleteVal:
+                        direction[i][j] = 'd'
+                    else:
+                        if s1[i - 1] == s2[j - 1]:
+                            direction[i][j] = 'n'
+                        else:
+                            direction[i][j] = 's'
 
-        elif direction[stI][stJ] == 'd':
-            finalStr1 = "_" + finalStr1
-            finalStr2 = s2[stJ - 1] + finalStr2
-            stJ = stJ - 1
+                            # dp[i][j] = minAll + 1
 
-        elif direction[stI][stJ] == 's':
-            finalStr1 = s1[stI - 1] + finalStr1
-            finalStr2 = s2[stJ - 1] + finalStr2
-            stI = stI - 1
-            stJ = stJ - 1
+        stI = len1
+        stJ = len2
+        while stI > 0 or stJ > 0:
+            if direction[stI][stJ] == 'i':
+                finalStr1 = s1[stI - 1] + finalStr1
+                finalStr2 = "_" + finalStr2
+                stI = stI - 1
 
-        elif direction[stI][stJ] == 'n':
-            finalStr1 = "*" + finalStr1
-            finalStr2 = "*" + finalStr2
-            stI = stI - 1
-            stJ = stJ - 1
+            elif direction[stI][stJ] == 'd':
+                finalStr1 = "_" + finalStr1
+                finalStr2 = s2[stJ - 1] + finalStr2
+                stJ = stJ - 1
 
-        else:
-            # finalStr1 = "TX" + finalStr1
-            # finalStr2 = "TX" + finalStr2
-            finalStr1 = s1[stI - 2] + s1[stI - 1] + finalStr1
-            finalStr2 = s2[stJ - 2] + s2[stJ - 1] + finalStr2
-            stI = stI - 2
-            stJ = stJ - 2
+            elif direction[stI][stJ] == 's':
+                finalStr1 = s1[stI - 1] + finalStr1
+                finalStr2 = s2[stJ - 1] + finalStr2
+                stI = stI - 1
+                stJ = stJ - 1
 
-    # print(s1,s2)
-    # stI = 1
-    # stJ = 1
-    # ind = 0
-    #
-    # while True:
-    #     if stI not in direction.keys():
-    #         if stJ not in direction[0].keys():
-    #             break
-    #     if stI in direction.keys():
-    #         if stJ not in direction[stI].keys():
-    #             finalStr1 = finalStr1 + s1[stI - 1]
-    #             finalStr2 = finalStr2 + "_"
-    #             stI = stI + 1
-    #             ind = 10
-    #
-    #     if stI not in direction.keys():
-    #         if stJ in direction[0].keys():
-    #             finalStr1 = finalStr1 + "_"
-    #             finalStr2 = finalStr2 + s2[stJ - 1]
-    #             stJ = stJ + 1
-    #             ind = 10
-    #
-    #     if ind != 10:
-    #         if direction[stI][stJ] == 'i':
-    #             if s1 == "BR" or s1 == "BR JR":
-    #                 print(s1)
-    #             finalStr1 = finalStr1 + s1[stI - 1]
-    #             finalStr2 = finalStr2 + "_"
-    #             stI = stI + 1
-    #
-    #
-    #         elif direction[stI][stJ] == 'd':
-    #             if s1 == "BR" or s1 == "BR JR":
-    #                 print(s1)
-    #             finalStr1 = finalStr1 + "_"
-    #             finalStr2 = finalStr2 + s2[stJ - 1]
-    #             stJ = stJ + 1
-    #
-    #
-    #         elif direction[stI][stJ] == 's':
-    #             finalStr1 = finalStr1 + s1[stI - 1]
-    #             finalStr2 = finalStr2 + s2[stJ - 1]
-    #             stI = stI + 1
-    #             stJ = stJ + 1
-    #
-    #
-    #         elif direction[stI][stJ] == 'n':
-    #             finalStr1 = finalStr1 + "*"
-    #             finalStr2 = finalStr2 + "*"
-    #             stI = stI + 1
-    #             stJ = stJ + 1
-    #
-    #         else:
-    #             finalStr1 = finalStr1 + s1[stI - 1] + s1[stI - 2]
-    #             finalStr2 = finalStr2 + s2[stJ - 1] + s2[stJ - 2]
-    #             stI = stI + 2
-    #             stJ = stJ + 2
+            elif direction[stI][stJ] == 'n':
+                finalStr1 = "*" + finalStr1
+                finalStr2 = "*" + finalStr2
+                stI = stI - 1
+                stJ = stJ - 1
 
-    print finalStr1, finalStr2
+            else:
+                finalStr1 = s1[stI - 2] + s1[stI - 1] + finalStr1
+                finalStr2 = s2[stJ - 2] + s2[stJ - 1] + finalStr2
+                stI = stI - 2
+                stJ = stJ - 2
+
     return finalStr1, finalStr2
 
 def damerau_levenshtein_distance(s1, s2):
@@ -315,7 +282,7 @@ def get_star_vot_reg(n1, n2):
     if hamm_trans > 4:
         return n1, n2
     else:
-        final_1, final_2 = get_edit_distance(n1,n2)
+        final_1, final_2 = get_edit_distance(n1,n2,"ID")
         final_1 = trailing_space_symbol(final_1)
         final_2 = trailing_space_symbol(final_2)
         return final_1,final_2
@@ -349,7 +316,7 @@ def pair(s,star_indices):
                     x, y = get_edit_distance(tmp1[i], tmp2[i])
                 else:
                     x, y = tmp1[i], tmp2[i]
-            elif i == star_indices["race"]:
+            elif i == star_indices["race"] or i == star_indices["sex"]:
                 if tmp1[i] == tmp2[i]:
                     x, y = "*", "*"
                 else:
@@ -387,6 +354,7 @@ def make_list_dict(file_path,id_name):
     index_file_id = find_index(title,"file_id") -1
     star_calc_indexes = {"voter_reg_num":index_vot_reg-1, "last_name":index_lname-1,"first_name":index_fname-1,"dob":index_dob-1}
     star_calc_indexes["race"] = find_index(title,"race") -1
+    star_calc_indexes["sex"] = find_index(title, "sex") - 1
     data = {}
     ff = {}
     lf = {}
@@ -421,12 +389,17 @@ def star_similarities(d, star_indices,index_file_id):
             file_id_2 = d[p][i][index_file_id]
             type_1 = d[p][0][title.index("type")-1]
             type_2 = d[p][1][title.index("type")-1]
-            answer_1 = d[p][0][title.index("answer")-1]
-            answer_2 = d[p][1][title.index("answer")-1]
+            answer_1 = d[p][0][title.index("same")-1]
+            answer_2 = d[p][1][title.index("same")-1]
+            ff_1 = d[p][0][title.index("cntfn") - 1]
+            ff_2 = d[p][1][title.index("cntfn") - 1]
+            lf_1 = d[p][0][title.index("cntln") - 1]
+            lf_2 = d[p][1][title.index("cntln") - 1]
             # if not file_id_1 == file_id_2:
             x, y = pair([d[p][0], d[p][i]], star_indices)
-            data += [[p, file_id_1] + x + [type_1,answer_1]]
-            data += [[p, file_id_2] + y + [type_2,answer_2]]
+            data += [[p, file_id_1] + x + [ff_1,lf_1,type_1,answer_1]]
+            print [[p, file_id_1] + x + [ff_1,lf_1,type_1,answer_1]]
+            data += [[p, file_id_2] + y + [ff_2,lf_2,type_2,answer_2]]
             # id += 1
     return data
 
@@ -439,7 +412,8 @@ def data_filter(data_as_list,item):
 
 def get_col_indices(data, star_indices, order):
     id_grp = [0,1]
-    type_answer = [12,13]
+    len_array = len(data[0])
+    type_answer = [len_array-2,len_array-1]
     org = [star_indices[item] + 2 for item in order]
     offset = (len(data[0]) - 2) / 2 - 1
     star =  [i + offset for i in org]
@@ -461,11 +435,11 @@ def write_data(data_list,file_name, title_array):
     w = csv.writer(f)
     w.writerow(title_array)
     for i in range(len(data_list)):
-        rec = data_list[i]
-        rec.insert(3, ff[rec[2]])
-        rec.insert(5, lf[rec[4]])
-        data_list[i] = rec
-        w.writerow(rec)
+        # rec = data_list[i]
+        # rec.insert(3, ff[rec[2]])
+        # rec.insert(5, lf[rec[4]])
+        # data_list[i] = rec
+        w.writerow(data_list[i])
     f.close()
 
 
@@ -475,6 +449,6 @@ print(title)
 print(star_indices)
 data = star_similarities(d, star_indices,index_file_id)
 print("The number of items in data are", len(data))
-data_starred = reorganize_cols(data, star_indices, ["first_name", "last_name", "voter_reg_num", "dob","race"])
-title_array = ['Group ID', 'Record ID','First Name', 'FF', 'Last Name', 'LF', 'Reg No.', 'DoB', "Race", 'First Name', 'Last Name', 'Reg No.', 'DoB','Race','type','Same']
-write_data(data_starred, "./data_intermediate/all_starred_race.csv",title_array)
+# data_starred = reorganize_cols(data, star_indices, ["voter_reg_num","first_name", "last_name", "dob","sex","race"])
+title_array = ['Group ID', 'Record ID','Reg No.','First Name', 'Last Name', 'DoB','Sex', "Race", 'Reg No.','First Name', 'Last Name', 'DoB','Sex','Race','FF','LF','type','Same']
+write_data(data, "./data_intermediate/all_starred_race.csv",title_array)

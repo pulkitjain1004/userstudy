@@ -44,9 +44,10 @@
 <script>
     (function(){
         $.getScript("javascript/misc/util.js");
+        experimentr.startTimer('section2');
         experimentr.hideNext();
         console.log("in");
-        parsing("data/section2.csv","section2");
+        parsing(experimentr.data()["section2_sample_name"],"section2");
         experimentr.data()['section'] = 'section2';
         var step = 0;
         d3.select("#endStudy").style("visibility","hidden");
@@ -64,6 +65,8 @@
         delay_next(250);
 
         function goToNext() {
+            delete experimentr.data()['section2'];
+            experimentr.endTimer('section2');
             experimentr.next();
         };
 
@@ -88,20 +91,19 @@
             .on('click', function () {
                 console.log(step);
                 d3.select('#submitComments').style("position","absolute").style("left","90px");
-//                console.log(Date.now());
 
 
                 if(step==experimentr.data()["section2"].length-1){
                     goToNext();
                 }else {
-//                    d3.select("#notation").text("Page " + (step + 1).toString() + "/" + (experimentr.data()['section2'].length - 1).toString());
-                    d3.select("#notation").html("");
+                    d3.select("#notation").text("Page " + (step + 1).toString());
                     setTimeout(function () {
                         d3.selectAll(".blocks").remove();
                         console.log(experimentr.data()["section2"][step-1]);
                         pairs(experimentr.data()["section2"][step-1], step-1, experimentr.data()["section2"][step-1].length, experimentr.data()["mode"]);
-                        if (experimentr.data()["section2"] == "Vanilla") {
+                        if (experimentr.data()["mode"] == "Vanilla") {
                             d3.selectAll(".icon").remove();
+                            d3.selectAll(".freq").remove();
                         }
                     }, 100);
 
@@ -109,7 +111,8 @@
                     step += 1;
                  }
                 // time elapse
-                experimentr.data()['switch'][step] = Date.now();
+                grading2();
+                experimentr.data()['switch'].push(Date.now());
                 experimentr.save();
             });
     }());

@@ -53,15 +53,17 @@
     var sequence = [
         'modules/consent.html',                      //0
         'modules/pre_study_questionnaire.html',      //1
-//        'modules/training.html',                     //2
-        'modules/0.html',                            //2
-        'modules/practice.html',                     //3
-        'modules/data_mapping.html',                 //4
-        'modules/practice2.html',                    //5
-        'modules/5.html',                            //6
-        'modules/section2.html',                     //7
-        'modules/post_study_questionnaire.html',     //8
-        'modules/end.html'                           //9
+        'modules/website_introduction.html',         //2
+        'modules/0.html',                            //3
+        'modules/practice.html',                     //4
+        'modules/data_mapping.html',                 //5
+        'modules/practice2.html',                    //6
+        'modules/main_section_start.html',           //7
+        'modules/5.html',                            //8
+        'modules/section2.html',                     //9
+        'modules/post_study_questionnaire.html',     //10
+        'modules/thanks.html',                       //11
+//        'modules/end.html'
     ];
 
     var QueryString = function () {
@@ -125,6 +127,10 @@
 //        console.log(sequence);
         sequence.splice(0, 0, "modules/consent.html");
         console.log(sequence);
+    }
+
+    if(QueryString.disclosure_test == "true"){
+        sequence = ['modules/consent.html', "modules/disclosure_test.html",'modules/thanks.html'];
     }
 
     experimentr.sequence(sequence).start();
