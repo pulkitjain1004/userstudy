@@ -52,7 +52,7 @@
 
     var sequence = [
         'modules/consent.html',                      //0
-        'modules/pre_study_questionnaire.html',      //1
+//        'modules/pre_study_questionnaire.html',      //1
         'modules/website_introduction.html',         //2
         'modules/0.html',                            //3
         'modules/practice.html',                     //4
@@ -60,8 +60,8 @@
         'modules/practice2.html',                    //6
         'modules/main_section_start.html',           //7
         'modules/5.html',                            //8
-        'modules/section2.html',                     //9
-        'modules/post_study_questionnaire.html',     //10
+//        'modules/section2.html',                     //9
+//        'modules/post_study_questionnaire.html',     //10
         'modules/thanks.html',                       //11
 //        'modules/end.html'
     ];
@@ -116,6 +116,33 @@
         }
     }
 
+
+    var pnum = parseInt(parseInt(QueryString.id)%1080);
+    var mode_order = [1,2,3,4,5];
+    var iteration = mode_order.indexOf(parseInt(mode)) + 1;
+    var sample;
+
+    if(pnum <= 5) {
+        sample = pnum + iteration - 1;
+        if(sample > 5){
+            sample = sample - 5;
+        }
+
+    } else {
+        sample = 11 - pnum - iteration + 1;
+
+        if(sample <= 0){
+          sample = 5 - (-sample);
+        }
+    }
+
+    experimentr.data()["sample_number"] = sample;
+
+    console.log(pnum,iteration,sample);
+    console.log(window.location.href.toString().split("/")[2]);
+    var server = window.location.href.toString().split("/")[2];
+    var next_url = "http://".concat(server,"/","?","id=",QueryString.id,"&mode=",mode_order[iteration],"&section=7");
+    experimentr.data()["next_url"] = next_url;
 
     console.log("The mode is "+find_mode(mode));
     experimentr.data()['mode'] = find_mode(mode);
