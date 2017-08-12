@@ -65,9 +65,9 @@ starred_data %>%
   group_by(type,`Record ID`) %>%
   unique() %>% count(type,`Record ID`)
 
-attention_test = c(1,7,13,19,25,31)#remove besides 7
+attention_test = c(1,7,13,19,25,31)
 
-remove_id=c(1,13,19,25,31)
+remove_id=c(1,13,19,25,31,7)
 
 starred_data <- 
   starred_data %>% 
@@ -93,8 +93,8 @@ for(i in 1:5) {
   #So we group by page(type) sample all rows(for randomizing) and then get the unique gids
   (gids_ordered <- 
       sample_i %>%
-      arrange(type) %>%
-      group_by(type) %>%
+      #arrange(type) %>%
+      #group_by(type) %>%
       do(sample_n(.,size = nrow(.))) %$%
       `Group ID` %>%
       unique())
@@ -103,13 +103,14 @@ for(i in 1:5) {
   (lookup <- tibble(`Group ID` = gids_ordered) %>%
       mutate(qnum = 1:n()))
   
+
   #number and arrange by lookup
   sample_i <- 
     sample_i %>%
     left_join(lookup, by = "Group ID") %>%
     mutate(`Group ID` = qnum) %>%
     select(-qnum) %>%
-    arrange(type,`Group ID`)
+    arrange(`Group ID`)
   
   #extract everything but those ids for section 2
   section2  <- 
@@ -138,10 +139,12 @@ for(i in 1:5) {
   names(sample_i) <- col_names
   names(section2) <- col_names
   
+
+  
   sample_i %>%
-    write_csv(paste0(sprintf("./data_output/samples/sample_%02d",i),".csv"))
+    write_csv(paste0(sprintf("./data_output/samples/sample_%02d",i+20),".csv"))
   section2 %>%
-    write_csv(paste0(sprintf("./data_output/samples/section2_%02d",i),".csv"))
+    write_csv(paste0(sprintf("./data_output/samples/section2_%02d",i+20),".csv"))
 }
 
 names(starred_data) <- col_names
