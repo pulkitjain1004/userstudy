@@ -55,6 +55,16 @@
         experimentr.startTimer('main_section');
         experimentr.data()['section'] = 'mat';
         experimentr.hideNext();
+        console.log(experimentr.data()["mat"]);
+//        experimentr.data()["mode"] === "Full" &&
+        if(QueryString.seq === "1"){
+            experimentr.data()["mode"] = "Vanilla";
+            experimentr.data()["mode_number"] = "1";
+        } else if(QueryString.seq === "3"){
+            experimentr.data()["mode"] = "Opti1";
+            experimentr.data()["mode_number"] = "3";
+        }
+
         // pages
 
         var step = 0;
