@@ -36,7 +36,7 @@
         }
         d3.select("#next_url_link").text(experimentr.data()["next_url"]).attr("href",experimentr.data()["next_url"]);
         var score = parseInt(experimentr.data()["total_score"]);
-        var report = "Good job! You have scored "+ score + " out of 36 ("+ Math.floor(score*100/36) +"%).";
+        var report = "Good job! You have scored "+ score + " out of 30 ("+ Math.floor(score*100/30) +"%).";
 
         d3.select('#score').text(report);
 

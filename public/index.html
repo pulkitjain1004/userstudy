@@ -128,13 +128,14 @@
         id = QueryString.id;
     }
 
-
+//    console.log("id=",id.slice(id.length-1,id.length));
     var seq = parseInt(QueryString.seq);
-    var pnum = parseInt(parseInt(id)%10) + 1;
+    var pnum = parseInt(id.slice(id.length-1,id.length)) + 1;
     var mode_order = [1,2,3,4,5];
 //    var iteration = mode_order.indexOf(parseInt(mode)) + 1;
     var iteration = seq;
     var sample;
+
 
     if(pnum <= 5) {
         sample = pnum + iteration - 1;
@@ -149,6 +150,9 @@
           sample = 5 - (-sample);
         }
     }
+
+//    console.log(parseFloat(QueryString.id));
+    console.log("pnum",pnum,"iteration",iteration,"sample",sample);
 
     experimentr.data()["sample_number"] = sample;
 //    console.log(experimentr.data()["postId"]);

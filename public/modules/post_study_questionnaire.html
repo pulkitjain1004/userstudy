@@ -18,19 +18,69 @@
 
     <div style="font-size: 100%">
 
+
+    <div id="mode_feedback" style="width: 700px;">
+        1. What did you think of the different modes (base, full, optimal decision, optimal privacy, de-identified)?
+        <br><br>
+        <textarea name="text_area_modes" rows="4" cols="90"></textarea>
+    </div>
+
+    <br><br>
+
+    <div id="mode_order_feedback" style="width: 700px;">
+        2. How was the ordering of the modes? Any suggestions?
+        <br><br>
+        <textarea name="text_area_mode_order" rows="4" cols="90"></textarea>
+    </div>
+
+    <br><br>
+
+
+    <div id="icons_feedback" style="width: 700px;">
+        3. How helpful were the icons (insert, delete, transpose, missing, different, check marks for same, swaps etc)? Did you (dis)like any particular icon?
+        <br><br>
+        <textarea name="text_area_icons" rows="4" cols="90"></textarea>
+    </div>
+
+    <br><br>
+
+    <div id="freq_feedback" style="width: 700px;">
+        4. How helpful were the frequency icons?
+        <br><br>
+        <textarea name="text_area_freq" rows="4" cols="90"></textarea>
+    </div>
+
+    <br><br>
+
+
     <div id="div_difficulty" style="width: 700px;">
-        1. Please explain any issues that made it <strong>harder</strong> to make linkage decisions:<br><br>
+        5. When were linkage decisions <strong>hard</strong>?<br><br>
         <textarea name="text_area_difficulty" rows="4" cols="90"></textarea>
     </div>
 
     <br><br>
 
     <div id="div_easiness" style="width: 700px;">
-        2. Please explain any features that made it <strong>easier</strong> to make linkage decisions:<br><br>
+        6. When were linkage decisions <strong>easy</strong><br><br>
         <textarea name="text_area_easiness" rows="4" cols="90"></textarea>
     </div>
 
+
     <br><br>
+
+    <div id="div_comments" style="width: 700px;">
+        7. Any other comments you would like to share?<br><br>
+        <textarea name="text_area_comments" rows="4" cols="90"></textarea>
+    </div>
+
+    <br><br>
+
+    <div id="div_submit">
+        <input type="button" id="submitComments" name="button_submit" value="Submit" style="position: absolute; left: 250px;">
+    </div>
+
+
+
 
 </div>
 </body>
@@ -51,9 +101,28 @@
             .filter(function(d) { return this.name === 'text_area_easiness' ? this : null; })
             .on('change', function() { data.ps_features_easy = this.value;});
 
+        d3.selectAll('textarea')
+            .filter(function(d) { return this.name === 'text_area_freq' ? this : null; })
+            .on('change', function() { data.ps_freq_icons = this.value;});
+        d3.selectAll('textarea')
+            .filter(function(d) { return this.name === 'text_area_icons' ? this : null; })
+            .on('change', function() { data.ps_icons = this.value;});
+        d3.selectAll('textarea')
+            .filter(function(d) { return this.name === 'text_area_mode_order' ? this : null; })
+            .on('change', function() { data.ps_mode_order = this.value;});
+        d3.selectAll('textarea')
+            .filter(function(d) { return this.name === 'text_area_modes' ? this : null; })
+            .on('change', function() { data.ps_modes = this.value;});
+        d3.selectAll('textarea')
+            .filter(function(d) { return this.name === 'text_area_comments' ? this : null; })
+            .on('change', function() { data.ps_comments = this.value;});
 
-
-
+        d3.select('#submitComments')
+            .on('click', function () {
+                experimentr.endTimer('post_survey_timer');
+                experimentr.addData(data);
+                experimentr.next();
+            });
 
     }());
 
