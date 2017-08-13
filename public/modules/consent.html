@@ -145,12 +145,12 @@
 
 
 
-  cbox1.on('change',function(d){ 
+  cbox1.on('change',function(d){
     console.log(cbox1.property("value"));
-    cbox1.property("value",-cbox1.property("value")); 
+    cbox1.property("value",-cbox1.property("value"));
     validate();
   })
-  
+
   function load(){
     w = $(window).width();
     h = $(window).height();
@@ -343,12 +343,17 @@
     }
  }
 
- console.log(QueryString.section === undefined);
- if(QueryString.section !== undefined ){
-     setTimeout(function () {
+
+ setTimeout(function () {
+     if(QueryString.section !== undefined ) {
+         d3.select('#consentYes').attr('disabled', null);
+         d3.select('#consentYes').style('color', "black");
+         experimentr.addData(data);
+         experimentr.data()['switch'].push(Date.now());
          experimentr.next();
-     },500);
- }
+     }
+ },500);
+
 
 
 }());

@@ -9,7 +9,7 @@
 
 
     <br style="width: 700px">
-        <h4>Please answer these few questions about the study</h4><br>
+        <h4>Please answer these few questions about the study.</h4><br>
         For a snapshot of the different modes, click <a id="popup_open">here</a>
         <hr>
     </div>
@@ -20,7 +20,7 @@
 
 
     <div id="mode_feedback" style="width: 700px;">
-        1. What did you think of the different modes (base, full, optimal decision, optimal privacy, de-identified)?
+        1. What did you think of the different modes <a id="popup_open2">(base, full, optimal decision, optimal privacy, de-identified)</a>?
         <br><br>
         <textarea name="text_area_modes" rows="4" cols="90"></textarea>
     </div>
@@ -45,7 +45,7 @@
     <br><br>
 
     <div id="freq_feedback" style="width: 700px;">
-        4. How helpful were the frequency icons?
+        4. How helpful were the frequency icons?<img src="resources/training_frequency_icons2.PNG" height="70px" width="350px">
         <br><br>
         <textarea name="text_area_freq" rows="4" cols="90"></textarea>
     </div>
@@ -54,14 +54,14 @@
 
 
     <div id="div_difficulty" style="width: 700px;">
-        5. When were linkage decisions <strong>hard</strong>?<br><br>
+        5. When were linkage decisions <strong>difficult</strong>?<br><br>
         <textarea name="text_area_difficulty" rows="4" cols="90"></textarea>
     </div>
 
     <br><br>
 
     <div id="div_easiness" style="width: 700px;">
-        6. When were linkage decisions <strong>easy</strong><br><br>
+        6. When were linkage decisions <strong>easy</strong>?<br><br>
         <textarea name="text_area_easiness" rows="4" cols="90"></textarea>
     </div>
 
@@ -90,6 +90,10 @@
         experimentr.startTimer('post_survey_timer');
         experimentr.hideNext();
         d3.select("#popup_open").on("click", function(){
+            window.open("disclosure_snap",'_blank');
+        });
+
+        d3.select("#popup_open2").on("click", function(){
             window.open("disclosure_snap",'_blank');
         });
 
