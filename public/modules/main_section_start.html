@@ -40,11 +40,23 @@
                 .style("fill", "none");
         }
 
-        add_mod_intros("main_study.png");
+        if(QueryString.seq === "1"){
+            add_mod_intros("intro1.PNG");
+        } else if(QueryString.seq === "3"){
+            add_mod_intros("intro2.PNG");
+        }
+
+
         experimentr.hideNext();
+        var click_num = 1;
         d3.select('#submitComments')
             .on('click', function(){
-                experimentr.next();
+                if(QueryString.seq === "1" && click_num == 1){
+                    add_mod_intros("main_study.png");
+                    click_num = 2;
+                } else{
+                    experimentr.next();
+                }
             });
     }());
 </script>

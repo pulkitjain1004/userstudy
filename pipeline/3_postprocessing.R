@@ -29,10 +29,10 @@ col_names <- c("Group ID", "ID",
 
 (starred_data <- read_csv("./data_intermediate/all_starred_race.csv", 
                           col_types = cols(.default = "c", `Group ID` = "i")) %>%
-  mutate_all(funs(ifelse(is_not_empty(.),.,""))) %>%
+    mutate_all(funs(ifelse(is_not_empty(.),.,""))) %>%
     mutate(src = str_extract(`Record ID`, "[AB]")) %>%
-      rename(fname = `First Name`,
-             lname = `Last Name`))
+    rename(fname = `First Name`,
+           lname = `Last Name`))
 
 # (fname_freq <- read_csv("./frequencies/fname_freq.csv"))
 # (lname_freq <- read_csv("./frequencies/lname_freq.csv"))
@@ -50,7 +50,7 @@ col_names <- c("Group ID", "ID",
 #     select(-n)
 
 (starred_data <- 
-  starred_data %>%
+    starred_data %>%
     mutate(`Record ID` = str_extract(`Record ID`,"[0-9]+")))
 
 starred_data <- 
@@ -67,48 +67,56 @@ starred_data %>%
 
 attention_test = c(1,7,13,19,25,31)
 
+remove_id=c(1,13,19,25,31,7)
+
+starred_data <- 
+  starred_data %>% 
+  filter(!(`Record ID`  %in% remove_id))
+
 set.seed(1)
-for(i in 1:10) {
+for(i in 1:5) {
   #group by page and question number and get 1 group id from each
   # group. The id can then be used to extract the pairs
+  
   (gids <- 
-    starred_data %>%
-      group_by(type,`Record ID`) %>%
-        sample_n(1) %$%
-          `Group ID`)
-
+     starred_data %>%
+     group_by(type,`Record ID`) %>%
+     slice((i-1)*2+1) %>%
+     pull(`Group ID`))
+  
   #extarct those ids
   (sample_i <- 
-    starred_data %>% filter(`Group ID` %in% gids))
-    
+      starred_data %>% filter(`Group ID` %in% gids))
+  
   #for sample we need the questions to be in random order. Also after random ordering they
   #have to be numbered sequentially.
   #So we group by page(type) sample all rows(for randomizing) and then get the unique gids
   (gids_ordered <- 
-    sample_i %>%
-      arrange(type) %>%
-        group_by(type) %>%
-          do(sample_n(.,size = nrow(.))) %$%
-            `Group ID` %>%
-            unique())
+      sample_i %>%
+      #arrange(type) %>%
+      #group_by(type) %>%
+      do(sample_n(.,size = nrow(.))) %$%
+      `Group ID` %>%
+      unique())
   
   #we create a lookup for those gids
   (lookup <- tibble(`Group ID` = gids_ordered) %>%
-    mutate(qnum = 1:n()))
+      mutate(qnum = 1:n()))
   
+
   #number and arrange by lookup
   sample_i <- 
     sample_i %>%
-      left_join(lookup, by = "Group ID") %>%
-        mutate(`Group ID` = qnum) %>%
-          select(-qnum) %>%
-            arrange(type,`Group ID`)
+    left_join(lookup, by = "Group ID") %>%
+    mutate(`Group ID` = qnum) %>%
+    select(-qnum) %>%
+    arrange(`Group ID`)
   
   #extract everything but those ids for section 2
   section2  <- 
     starred_data %>%
     filter(!(`Group ID` %in% gids)) %>%
-      filter(!(`Group ID` %in% attention_test))
+    filter(!(`Group ID` %in% attention_test))
   
   (gids_ordered2 <- 
       section2 %>%
@@ -126,15 +134,17 @@ for(i in 1:10) {
     mutate(`Group ID` = qnum) %>%
     select(-qnum) %>%
     arrange(`Group ID`)
-
+  
   #make the names standard
   names(sample_i) <- col_names
   names(section2) <- col_names
   
+
+  
   sample_i %>%
-    write_csv(paste0(sprintf("./data_output/samples/sample_%02d",i),".csv"))
+    write_csv(paste0(sprintf("./data_output/samples/sample_%02d",i+20),".csv"))
   section2 %>%
-    write_csv(paste0(sprintf("./data_output/samples/section2_%02d",i),".csv"))
+    write_csv(paste0(sprintf("./data_output/samples/section2_%02d",i+20),".csv"))
 }
 
 names(starred_data) <- col_names
@@ -143,3 +153,6 @@ write_csv(starred_data,"./data_output/allg_starred.csv")
 starred_data %>%
   sample_n(nrow(.)) %>%
   write_csv("./data_output/section2.csv")
+
+
+

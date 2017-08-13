@@ -145,12 +145,12 @@
 
 
 
-  cbox1.on('change',function(d){ 
+  cbox1.on('change',function(d){
     console.log(cbox1.property("value"));
-    cbox1.property("value",-cbox1.property("value")); 
+    cbox1.property("value",-cbox1.property("value"));
     validate();
   })
-  
+
   function load(){
     w = $(window).width();
     h = $(window).height();
@@ -166,41 +166,37 @@
     var sample_name;
     var section2_name;
 
-    if(QueryString.sampling == 'true') {
-        experimentr.data()["sampled_data"] = "true";
-        var sample_num = getRandomInt(1,10);
-        if(sample_num == 10) {
-            sample_name = "data/sample_"+sample_num+".csv";
-            section2_name = "data/section2_"+sample_num+".csv";
-        } else {
-            sample_name = "data/sample_0"+sample_num+".csv";
-            section2_name = "data/section2_0"+sample_num+".csv";
-        }
-        parsing(sample_name,"mat");
-    } else if(!isNaN(QueryString.sampling)){
-        var sample_num =  parseInt(QueryString.sampling);
-        if(sample_num == 10) {
-            sample_name = "data/sample_"+sample_num+".csv";
-            section2_name = "data/section2_"+sample_num+".csv";
-        } else {
-            sample_name = "data/sample_0"+sample_num+".csv";
-            section2_name = "data/section2_0"+sample_num+".csv";
-        }
-        parsing(sample_name,"mat");
-    } else{
-        experimentr.data()["sampled_data"] = "false";
-        sample_name = "data/output.csv";
-        section2_name = "data/section2.csv";
-        parsing("data/output.csv","mat");
-    }
-
+//    if(QueryString.sampling == 'true') {
+//        experimentr.data()["sampled_data"] = "true";
+//        var sample_num = getRandomInt(1,5);
+//        sample_name = "data/sample_0"+sample_num+".csv";
+////            section2_name = "data/section2_0"+sample_num+".csv";
+//        parsing(sample_name,"mat");
+//    } else if(!isNaN(QueryString.sampling)){
+//        var sample_num =  parseInt(QueryString.sampling);
+//        if(sample_num == 10) {
+//            sample_name = "data/sample_"+sample_num+".csv";
+//            section2_name = "data/section2_"+sample_num+".csv";
+//        } else {
+//            sample_name = "data/sample_0"+sample_num+".csv";
+//            section2_name = "data/section2_0"+sample_num+".csv";
+//        }
+//        parsing(sample_name,"mat");
+//    } else{
+//        experimentr.data()["sampled_data"] = "false";
+//        sample_name = "data/output.csv";
+////        section2_name = "data/section2.csv";
+//        parsing("data/output.csv","mat");
+//    }
+    sample_name = "data/sample_2"+ experimentr.data()["sample_number"] + ".csv";
+    parsing(sample_name,"mat");
     parsing2("data/practice.csv","practice");
     parsing("data/practice2.csv","practice2");
 
     console.log(sample_name);
     console.log(section2_name);
     experimentr.data()["sample_name"] = sample_name;
-    experimentr.data()["section2_sample_name"] = section2_name;
+//    experimentr.data()["section2_sample_name"] = section2_name;
 //    parsing_disclosure(experimentr.data()["sample_name"],"disclosure_data");
 
     function count(arr) {
@@ -346,6 +342,19 @@
       version: M[1]
     }
  }
+
+
+ setTimeout(function () {
+     if(QueryString.section !== undefined ) {
+         d3.select('#consentYes').attr('disabled', null);
+         d3.select('#consentYes').style('color', "black");
+         experimentr.addData(data);
+         experimentr.data()['switch'].push(Date.now());
+         experimentr.next();
+     }
+ },500);
+
+
 
 }());
 
